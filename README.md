@@ -29,8 +29,8 @@
 This project was developed by Luiz Otávio [in/luizotaviocariocafilho/](https://www.linkedin.com/in/luizotaviocariocafilho/) with the following technologies:
 
 - [HTML]()
-- [CSS][]
-- [Javascript]()
+- [CSS]()
+- [Javascript]() 
 
-- [VS Code][vscode] with [EditorConfig][vceditconfig] and [ESLint][vceslint]
+
   
