@@ -11,36 +11,21 @@ const Modal = {
     },
 };
 
-const transactions = [{
-        id: 1,
-        description: "Luz",
-        amount: -50000,
-        date: "23/01/2021",
+const Storage = {
+    get() {
+        return JSON.parse(localStorage.getItem("dev.finances:transactions")) || [];
     },
-    {
-        id: 2,
-        description: "WebSite",
-        amount: 500000,
-        date: "23/01/2021",
+    set(transactions) {
+        localStorage.setItem("dev.finances:transactions", JSON.stringify(transactions))
     },
-    {
-        id: 3,
-        description: "Internet",
-        amount: -30000,
-        date: "23/01/2021",
-    },
-    {
-        id: 4,
-        description: "Salario",
-        amount: 100000,
-        date: "24/01/2021",
-    }
-];
+}
+
+
 
 //Contem tudo que será executado fora da DOM*************
 
 const Transaction = {
-    all: transactions,
+    all: Storage.get(),
 
     add(transaction) {
         Transaction.all.push(transaction)
@@ -82,10 +67,11 @@ const DOM = {
     transactionsContainer: document.querySelector('#data-table tbody'),
     addTransaction(transaction, index) {
         const tr = document.createElement("tr")
-        tr.innerHTML = DOM.innerHTMLTransaction(transaction);
+        tr.innerHTML = DOM.innerHTMLTransaction(transaction, index)
+        tr.dataset.index = index
         DOM.transactionsContainer.appendChild(tr)
     },
-    innerHTMLTransaction(transaction) {
+    innerHTMLTransaction(transaction, index) {
         const CSSclass = transaction.amount > 0 ? "income" : "expense"
         const amount = Utils.formatCurrency(transaction.amount)
 
@@ -93,7 +79,7 @@ const DOM = {
         <td class="description">${transaction.description}</td>
         <td class="${CSSclass}">${amount}</td>
         <td class="date">${transaction.date}</td>
-        <td><img src="./assets/minus.svg" alt="Remover transação"></td>
+        <td><img onclick="Transaction.remove(${index})" src="./assets/minus.svg" alt="Remover transação"></td>
            
         `;
         return html;
@@ -195,12 +181,12 @@ const Form = {
 }
 
 
+
 const App = {
     init() {
-        Transaction.all.forEach((transaction) => {
-            DOM.addTransaction(transaction)
-        })
+        Transaction.all.forEach(DOM.addTransaction)
         DOM.updateBalance()
+        Storage.set(Transaction.all)
     },
     reload() {
         DOM.clearTransactions()
